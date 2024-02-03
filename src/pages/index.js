@@ -1,10 +1,142 @@
 import Image from "next/image";
 import { Inter } from "next/font/google";
+import React from "react";
+import { useEffect, useState } from 'react';
+import NavBar from "@/pages/NavBar";
+import IndexPage from "./IndexPage";
 
 const inter = Inter({ subsets: ["latin"] });
 
+function Button({ onClick }) {
+    return (
+        <button onClick={onClick}>
+            Create Post
+        </button>
+    );
+}
+
+
 export default function Home() {
-  return (
+
+   
+
+   
+    const [created, setCreated] = useState(false);
+
+    //async function getPageData() {
+
+    //    //const apiUrlEndpoint = 'http://localhost:3000/api/getdata';
+    //    //const response = await fetch(apiUrlEndpoint);
+    //    //const res = await response.json();
+    //    //console.log(res);
+    //    //setData(res.results);
+
+
+    //};
+    var stuff = [];
+    const [content, setContent] = useState([]);
+    async function getData() {
+        const postData = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }
+        const apiUrlEndpoint = 'http://localhost:3000/api/getdata';
+        const response = await fetch(apiUrlEndpoint, postData);
+        const result = await response.json();
+        console.log(result)
+        setData(result.results);
+        
+        data.map((item) => (
+            stuff.push(React.createElement("p", null, item.postTime))
+        ));
+        
+
+        const element = React.createElement("div", null, stuff);
+        setContent(element);
+    };
+    const [data, setData] = useState([]);
+
+    async function createData() {
+        /*const number = 106;*/
+        const date = new Date();
+        const currentTime = date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
+        const postData = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                timestamp: currentTime,
+            }),
+        }
+        
+        const apiUrlEndpoint = 'http://localhost:3000/api/getdata';
+        const response = await fetch(apiUrlEndpoint, postData);
+        const result = await response.json();
+        console.log(result)
+        if (result.response.message !== "success") return;
+        setCreated(true);
+        const element2 = <div>React.createElement("p", null, result.record.postTime)</div>;
+        stuff.push(element2);
+        const elements = React.createElement("div", null, stuff);
+        setContent(elements);
+    };
+
+    useEffect(() => {
+        
+        getData();
+    }, []);
+
+    
+
+    
+
+    function click() {
+        //const date = new Date();
+        
+        createData();
+    }
+
+
+    return (
+        <>
+            <NavBar />
+            <main className="flex min-h-screen flex-col items-center p-2">
+                
+                {/*<table>*/}
+                {/*    <tr><th>ID</th><th>Time</th></tr>*/}
+
+                {/*    {data.map((item, index) => {*/}
+                {/*        return (*/}
+                {/*            <tr key={item.postID}>*/}
+
+                {/*                <td>{item.postTime}</td>*/}
+                {/*            </tr>*/}
+                {/*        );*/}
+                {/*    })*/}
+                {/*    };*/}
+                {/*</table>*/}
+                <div>
+
+                    <p>Why App Test</p>
+                    <Button onClick={click} />
+                    {content}
+                    <ul className="">
+                        {data.map((item) => (
+                            <li key={item.postID}>{item.postTime}</li>
+                        ))}
+                    </ul>
+
+                </div>
+
+            </main>
+        </>
+    );
+
+
+  /*return (
     <main
       className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
     >
@@ -114,5 +246,5 @@ export default function Home() {
         </a>
       </div>
     </main>
-  );
+  );*/
 }
