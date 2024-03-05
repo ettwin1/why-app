@@ -53,15 +53,18 @@ export default function Home() {
     const [data, setData] = useState([]);
 
     async function createData() {
-        const date = new Date();
-        const currentTime = date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
+        //const date = new Date();
+        //const currentTime = date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
+        const question = "Test Post?"
+        const email = "ethanthomasalvi@gmail.com"
         const postData = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                timestamp: currentTime,
+                "question": question,
+                "email": email
             }),
         }
         
@@ -69,8 +72,8 @@ export default function Home() {
         const response = await fetch(apiUrlEndpoint, postData);
         const result = await response.json();
         console.log(result);
-        setCreated(true)
-        const newData = result.record
+        setCreated(true);
+        const newData = result.record;
 
         //const element2 = <div>React.createElement("p", null, result.record.postTime)</div>;
         //stuff.push(element2);
@@ -79,14 +82,17 @@ export default function Home() {
 
 
         setData([
-            ...data,
             {
-                postID: newData.record_id,
-                postTime: newData.postTime,     
+                id: newData.id,
+                question: newData.question,     
+                asker: newData.asker,     
+                created: newData.created,     
             },
+            ...data,
         ]);
     };
 
+    // OnLoad
     useEffect(() => {
         
         getData();
@@ -109,14 +115,18 @@ export default function Home() {
             <main className="flex min-h-screen flex-col items-center p-2">
                 
                 <div>
-                    <div className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"><Button className="" onClick={createData} /></div>
+                    <div className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={createData} ><Button className=""/></div>
                     {/* {content}*/}
 
-                    <ul className="">
                         {data.map((item) => (
-                            <li className="bg-white p-4 shadow-md rounded-md max-w-lg mx-auto mt-4" key={item.postID}>{item.postTime}</li>
+                            <div className="bg-white p-4 shadow-md rounded-md max-w-lg mx-auto mt-4" key={item.id}>
+                              <div className="mb-4">
+                                    <p className="font-bold">{item.asker}</p>
+                                    <p className="text-gray-500 text-sm ">{new Date(item.created).getFullYear()}</p>
+                              </div>
+                              <div >{item.question}</div>
+                            </div>
                         ))}
-                    </ul>
                     {/*<p>{created}</p>*/}
                     {!like ? (
                         <img className="m-4" onClick={click} src="images/like.png" />

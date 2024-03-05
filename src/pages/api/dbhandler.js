@@ -12,10 +12,11 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "POST") {
-        const time = req.body.timestamp;
+        const question = req.body.question;
+        const email = req.body.email;
         const addData = await query({
-            query: "INSERT INTO posts (postTime) VALUES (?)",
-            values: [time],
+            query: "INSERT INTO posts (question, asker) VALUES (?, ?)",
+            values: [question, email],
         });
         if (addData.insertId) { // If it worked
             message = "success"
@@ -24,7 +25,9 @@ export default async function handler(req, res) {
         }
         let record = {
             record_id: addData.insertId, //The id of the record
-            postTime: time,      // The value we inserted
+            "question": question,      // The value we inserted
+            "asker": email,
+            "created": new Date(),
         }
         res.status(200).json({ response: message, record:record});
     }
