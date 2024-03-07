@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import React from "react";
 import { useEffect, useState } from 'react';
 import NavBar from "@/components/NavBar";
-
+import Post from "../components/Post"
 import IndexPage from "./IndexPage";
 import AddPostForm from "../components/AddPostForm";
 
@@ -130,15 +130,8 @@ export default function Home() {
                     <AddPostForm onSubmit={addPost} />
                     {/*<div className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => addPost(JSON.stringify({ "name": "test", "question": "test" }))} ><Button className="" /></div>*/}
                     {/* {content}*/}
-
                         {data.map((item) => (
-                            <div className="bg-white p-4 shadow-md rounded-md max-w-lg mx-auto mt-4" key={item.id}>
-                              <div className="mb-4">
-                                    <p className="font-bold">{item.asker}</p>
-                                    <p className="text-gray-500 text-sm ">{new Date(item.created).getFullYear()}</p>
-                              </div>
-                              <div >{item.question}</div>
-                            </div>
+                            <Post key={ item.id} postData={item} />
                         ))}
                     {/*<p>{created}</p>*/}
                     {!like ? (
