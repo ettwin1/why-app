@@ -77,7 +77,7 @@ export default function Home() {
             body: postData,
         }
 
-        const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler';
+        const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=createPost';
         const response = await fetch(apiUrlEndpoint, requestData);
         const result = await response.json();
         console.log(result);
@@ -99,6 +99,22 @@ export default function Home() {
             },
             ...data,
         ]);
+    };
+
+    async function addAnswer(answerData) {
+        const requestData = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: answerData,
+        }
+
+        const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=createAnswer';
+        const response = await fetch(apiUrlEndpoint, requestData);
+        const result = await response.json();
+        console.log(result);
+        const newData = result.record;
     };
 
 
@@ -130,8 +146,8 @@ export default function Home() {
                     <AddPostForm onSubmit={addPost} />
                     {/*<div className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => addPost(JSON.stringify({ "name": "test", "question": "test" }))} ><Button className="" /></div>*/}
                     {/* {content}*/}
-                        {data.map((item) => (
-                            <Post key={ item.id} postData={item} />
+                    {data.map((item) => (
+                        <Post key={item.id} postData={item} onSubmit={ addAnswer } />
                         ))}
                     {/*<p>{created}</p>*/}
                     {!like ? (

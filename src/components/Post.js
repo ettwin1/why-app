@@ -1,5 +1,6 @@
+import AddAnswerForm from "./AddAnswerForm";
 
-const Post = ({postData}) => {
+const Post = ({postData, onSubmit}) => {
 
     return (
         <div className="bg-white p-4 shadow-md rounded-md max-w-lg mx-auto mt-4" >
@@ -8,6 +9,9 @@ const Post = ({postData}) => {
                 <p className="text-gray-500 text-sm ">{new Date(postData.created).getFullYear()}</p>
             </div>
             <div >{postData.question}</div>
+            <br />
+            <hr />
+            <AddAnswerForm onSubmit={onSubmit} postId={postData.id} />
         </div>
     );
 }

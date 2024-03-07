@@ -22,22 +22,46 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "POST") {
-        const question = req.body.question;
-        const name = req.body.name;
-        const addData = await query({
-            query: "INSERT INTO posts (question, asker) VALUES (?, ?)",
-            values: [question, name],
-        });
-        if (addData.insertId) { // If it worked
-            message = "success"
-        } else {
-            message = "error"
-        }
-        let record = {
-            record_id: addData.insertId, //The id of the record
-            "question": question,      // The value we inserted
-            "asker": name,
-            "created": new Date(),
+        const requestType = req.query.requestType;
+        var record = {};
+        if (requestType === "createPost") {
+            const question = req.body.question;
+            const name = req.body.name;
+            const addData = await query({
+                query: "INSERT INTO posts (question, asker) VALUES (?, ?)",
+                values: [question, name],
+            });
+            if (addData.insertId) { // If it worked
+                message = "success"
+            } else {
+                message = "error"
+            }
+            record = {
+                record_id: addData.insertId, //The id of the record
+                "question": question,      // The value we inserted
+                "asker": name,
+                "created": new Date(),
+            }
+        } else if (requestType === "createAnswer") {
+            const answer = req.body.answer;
+            const name = req.body.name;
+            const postId = req.body.postId;
+            const addData = await query({
+                query: "INSERT INTO answers (postId, answer, answerer) VALUES (?, ?, ?)",
+                values: [postId, answer, name],
+            });
+            if (addData.insertId) { // If it worked
+                message = "success"
+            } else {
+                message = "error"
+            }
+            record = {
+                record_id: addData.insertId, //The id of the record
+                "postId": postId,
+                "answer": answer,      // The value we inserted
+                "answerer": name,
+                "created": new Date(),
+            }
         }
         res.status(200).json({ response: message, record:record});
     }
