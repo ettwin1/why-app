@@ -11,7 +11,7 @@ const SignInButton = ({ className }) => {
             <div className={className}>
                 <span className="m-2">{session.user.email}</span>
                 <span className="m-2">{session.user.name}</span>
-                <image className="inline" src={session.user.image} alt={session.user.name + " Photo"} /> { /* Not sure why session.user.image isn't working... perhaps needs permissions to get image*/}
+                <img className="inline" src={session.user.image} alt={session.user.name + " Photo"} />
                 <button className="m-2" onClick={() => signOut() }>Sign out</button>
             </div>
         );
