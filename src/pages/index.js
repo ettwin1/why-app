@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import React from "react";
 import { useEffect, useState } from 'react';
 import NavBar from "@/pages/NavBar";
+import { useSession } from 'next-auth/react';
 import IndexPage from "./IndexPage";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -18,7 +19,7 @@ function Button({ onClick }) {
 
 export default function Home() {
 
-   
+    const { data: session } = useSession();
 
    
     const [created, setCreated] = useState(false);
@@ -55,42 +56,50 @@ export default function Home() {
     async function createData() {
         //const date = new Date();
         //const currentTime = date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
-        const question = "Test Post?"
-        const email = "ethanthomasalvi@gmail.com"
-        const postData = {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                "question": question,
-                "email": email
-            }),
+
+        if (session && session.user) {
+            const question = "Test Post?"
+            const name = session.user.name;
+            const postData = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    "question": question,
+                    "name": name
+                }),
+            }
+
+            const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler';
+            const response = await fetch(apiUrlEndpoint, postData);
+            const result = await response.json();
+            console.log(result);
+            setCreated(true);
+            const newData = result.record;
+
+            //const element2 = <div>React.createElement("p", null, result.record.postTime)</div>;
+            //stuff.push(element2);
+            //const elements = React.createElement("div", null, stuff);
+            //setContent(elements);
+
+
+            setData([
+                {
+                    id: newData.id,
+                    question: newData.question,
+                    asker: newData.asker,
+                    created: newData.created,
+                },
+                ...data,
+            ]);
+        } else {
+            setCreated("Sorry, you must be logged in to post")
         }
-        
-        const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler';
-        const response = await fetch(apiUrlEndpoint, postData);
-        const result = await response.json();
-        console.log(result);
-        setCreated(true);
-        const newData = result.record;
-
-        //const element2 = <div>React.createElement("p", null, result.record.postTime)</div>;
-        //stuff.push(element2);
-        //const elements = React.createElement("div", null, stuff);
-        //setContent(elements);
-
-
-        setData([
-            {
-                id: newData.id,
-                question: newData.question,     
-                asker: newData.asker,     
-                created: newData.created,     
-            },
-            ...data,
-        ]);
     };
+
+
+
 
     // OnLoad
     useEffect(() => {
