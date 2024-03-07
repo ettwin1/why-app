@@ -3,10 +3,20 @@ import { query } from "@/lib/db";
 export default async function handler(req, res) {
     let message;
     if (req.method === "GET") {
-        const data = await query({
-             query : "SELECT * FROM posts",
-             values : [],
-        });
+        var data = {};
+        const requestType = req.query.requestType;
+        if (requestType === "all") {
+            data = await query({
+                query: "SELECT * FROM posts",
+                values: [],
+            });
+        } else if (requestType === "search") {
+            const searchTerm = req.query.term;
+            data = await query({
+                query: "SELECT * FROM posts WHERE question LIKE '%" + searchTerm + "%'",
+                values: [],
+            });
+        }
 
         res.status(200).json({ results: data});
     }

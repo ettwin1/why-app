@@ -25,9 +25,23 @@ export default function Home() {
    
     const [created, setCreated] = useState(false);
     const [like, setLike] = useState(false);
-
+    
     //var stuff = [];
     //const [content, setContent] = useState([]);
+
+    async function searchPosts(searchTerm) {
+        const requestData = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }
+        const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=search&term=' + searchTerm;
+        const response = await fetch(apiUrlEndpoint, requestData);
+        const result = await response.json();
+        console.log(result)
+        setData(result.results);
+    }
 
     async function getData() {
         const postData = {
@@ -36,7 +50,7 @@ export default function Home() {
                 "Content-Type": "application/json",
             },
         }
-        const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler';
+        const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=all';
         const response = await fetch(apiUrlEndpoint, postData);
         const result = await response.json();
         console.log(result)
@@ -52,8 +66,8 @@ export default function Home() {
         
 
     };
+    
     const [data, setData] = useState([]);
-
     async function addPost(postData) {
         const requestData = {
             method: "POST",
@@ -109,7 +123,7 @@ export default function Home() {
 
     return (
         <>
-            <NavBar />
+            <NavBar onSubmit={searchPosts} />
             <main className="flex min-h-screen flex-col items-center p-2">
                 
                 <div>
