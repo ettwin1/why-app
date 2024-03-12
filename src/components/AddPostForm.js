@@ -9,12 +9,19 @@ const AddPostForm = ({ onSubmit }) => {
         
         if (session && session.user) {
             const question = form.target.question.value;
-            const name = session.user.name;
-            const data = JSON.stringify({
-                "question": question,
-                "name": name
-            })
-            onSubmit(data);
+            if (question.slice(0, 3).toUpperCase() == "WHY") {
+                const email = session.user.email;
+                const data = JSON.stringify({
+                    "question": question,
+                    "email": email
+                })
+                onSubmit(data);
+            }else {
+                alert("Question must begin with 'Why'");
+            }
+            
+        } else {
+            // Go to login screen
         } 
         
     }

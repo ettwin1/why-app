@@ -3,8 +3,7 @@ import { Inter } from "next/font/google";
 import React from "react";
 import { useEffect, useState } from 'react';
 import NavBar from "@/components/NavBar";
-import Post from "../components/Post"
-import IndexPage from "./IndexPage";
+import QuestionPost from "../components/QuestionPost"
 import AddPostForm from "../components/AddPostForm";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -20,14 +19,11 @@ function Button({ onClick }) {
 
 export default function Home() {
 
-    
-
    
     const [created, setCreated] = useState(false);
     const [like, setLike] = useState(false);
     
-    //var stuff = [];
-    //const [content, setContent] = useState([]);
+
 
     async function searchPosts(searchTerm) {
         const requestData = {
@@ -54,19 +50,10 @@ export default function Home() {
         const response = await fetch(apiUrlEndpoint, postData);
         const result = await response.json();
         console.log(result)
-        setData(result.results);
-        
-        //data.map((item) => (
-        //    stuff.push(React.createElement("p", null, item.postTime))
-        //));
-        //const element = React.createElement("div", null, stuff);
-        //setContent(element);
-        //console.log(stuff);
-        //console.log(content);
-        
+        setData(result.results);    
 
     };
-    
+
     const [data, setData] = useState([]);
     async function addPost(postData) {
         const requestData = {
@@ -84,18 +71,14 @@ export default function Home() {
         setCreated(true);
         const newData = result.record;
 
-        //const element2 = <div>React.createElement("p", null, result.record.postTime)</div>;
-        //stuff.push(element2);
-        //const elements = React.createElement("div", null, stuff);
-        //setContent(elements);
-
-
         setData([
             {
                 id: newData.id,
                 question: newData.question,
                 asker: newData.asker,
                 created: newData.created,
+                img: newData.img,
+                name: newData.name,
             },
             ...data,
         ]);
@@ -147,7 +130,7 @@ export default function Home() {
                     {/*<div className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => addPost(JSON.stringify({ "name": "test", "question": "test" }))} ><Button className="" /></div>*/}
                     {/* {content}*/}
                     {data.map((item) => (
-                        <Post key={item.id} postData={item} onSubmit={ addAnswer } />
+                        <QuestionPost key={item.id} postData={item} onSubmit={ addAnswer } />
                         ))}
                     {/*<p>{created}</p>*/}
                     {!like ? (

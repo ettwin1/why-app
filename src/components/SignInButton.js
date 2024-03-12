@@ -6,6 +6,14 @@ const SignInButton = ({ className }) => {
 
     const { data: session } = useSession();
 
+    async function signingIn() {
+        signIn('google', {
+            callbackUrl: '/signingIn', // Redirect URL after successful sign-in
+        });
+
+        
+    }
+
     if (session && session.user) {
         return (
             <div className={className}>
@@ -18,7 +26,7 @@ const SignInButton = ({ className }) => {
     }
 
     return (
-        <button onClick={() => signIn()}>Sign In</button>
+        <button onClick={() => signingIn()}>Sign In</button>
     );
 }
 
