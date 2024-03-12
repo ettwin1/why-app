@@ -7,15 +7,29 @@ export default async function handler(req, res) {
         const requestType = req.query.requestType;
         if (requestType === "all") {
             data = await query({
-                query: "SELECT * FROM posts",
+                query: "SELECT id, question, asker, created, img, name FROM posts LEFT JOIN users ON users.email = posts.asker; ",
                 values: [],
             });
         } else if (requestType === "search") {
             const searchTerm = req.query.term;
             data = await query({
-                query: "SELECT * FROM posts WHERE question LIKE '%" + searchTerm + "%'",
+                query: "SELECT id, question, asker, created, img, name FROM posts LEFT JOIN users ON users.email = posts.asker WHERE question LIKE '%" + searchTerm + "%'",
                 values: [],
             });
+        } else if (requestType === "answers") {
+            const postId = req.query.id;
+            const answers = await query({
+                query: "SELECT * FROM answers WHERE postId = " + postId,
+                values: [],
+            });
+            const question = await query({
+                query: "SELECT question FROM posts WHERE id = " + postId,
+                values: [],
+            });
+            data = {
+                "answers": answers,
+                "question": question,
+            }
         }
 
         res.status(200).json({ results: data});
@@ -26,21 +40,29 @@ export default async function handler(req, res) {
         var record = {};
         if (requestType === "createPost") {
             const question = req.body.question;
-            const name = req.body.name;
+            const email = req.body.email;
             const addData = await query({
                 query: "INSERT INTO posts (question, asker) VALUES (?, ?)",
-                values: [question, name],
+                values: [question, email],
             });
             if (addData.insertId) { // If it worked
                 message = "success"
             } else {
                 message = "error"
             }
+
+            const [userData] = await query({
+                query: "SELECT id, question, asker, created, img, name FROM posts LEFT JOIN users ON users.email = posts.asker WHERE asker = '" + email + "';",
+                values: [],
+            });
+
             record = {
                 record_id: addData.insertId, //The id of the record
                 "question": question,      // The value we inserted
-                "asker": name,
-                "created": new Date(),
+                "asker": email,
+                "created": userData.created,
+                "img": userData.img,
+                "name": userData.name
             }
         } else if (requestType === "createAnswer") {
             const answer = req.body.answer;
@@ -62,6 +84,23 @@ export default async function handler(req, res) {
                 "answerer": name,
                 "created": new Date(),
             }
+        } else if (requestType === "userExists") {
+            const email = req.body.email;
+            const name = req.body.name;
+            const img = req.body.img;
+            const userExists = await query({
+                query: "Select insert_user_if_not_exists(?, ?, ?);",
+                values: [email, name, img],
+            });
+            if (userExists) { // If it worked
+                message = "success"
+            } else {
+                message = "error"
+            }
+            const boolean = userExists[0]["insert_user_if_not_exists(?, ?, ?)"]
+            record = {
+                "Does User Exist": boolean
+            };
         }
         res.status(200).json({ response: message, record:record});
     }
