@@ -57,7 +57,7 @@ export default async function handler(req, res) {
             });
 
             record = {
-                record_id: addData.insertId, //The id of the record
+                "id": addData.insertId, //The id of the record
                 "question": question,      // The value we inserted
                 "asker": email,
                 "created": userData.created,
@@ -78,7 +78,7 @@ export default async function handler(req, res) {
                 message = "error"
             }
             record = {
-                record_id: addData.insertId, //The id of the record
+                "id": addData.insertId, //The id of the record
                 "postId": postId,
                 "answer": answer,      // The value we inserted
                 "answerer": name,

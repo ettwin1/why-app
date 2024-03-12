@@ -56,6 +56,7 @@ const AnswersPage = ({ receivedData }) => {
 
                 <div>
                     <h1>{question}</h1>
+                    <h1>Answers:</h1>
                     {answers.map((item) => (
                         <AnswerPost key={item.id} answerData={item} />
                     ))}
