@@ -9,10 +9,10 @@ const AddAnswerForm = ({ onSubmit, postId }) => {
 
         if (session && session.user) {
             const answer = form.target.answer.value;
-            const name = session.user.name;
+            const email = session.user.email;
             const data = JSON.stringify({
                 "answer": answer,
-                "name": name,
+                "email": email,
                 "postId": postId,
             })
             onSubmit(data);

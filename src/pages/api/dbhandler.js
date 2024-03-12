@@ -19,7 +19,7 @@ export default async function handler(req, res) {
         } else if (requestType === "answers") {
             const postId = req.query.id;
             const answers = await query({
-                query: "SELECT * FROM answers WHERE postId = " + postId,
+                query: "SELECT id, postId, answer, answerer, created, img, name FROM answers LEFT JOIN users ON users.email = answers.answerer WHERE postId = " + postId,
                 values: [],
             });
             const question = await query({
@@ -57,7 +57,7 @@ export default async function handler(req, res) {
             });
 
             record = {
-                record_id: addData.insertId, //The id of the record
+                "id": addData.insertId, //The id of the record
                 "question": question,      // The value we inserted
                 "asker": email,
                 "created": userData.created,
@@ -66,11 +66,11 @@ export default async function handler(req, res) {
             }
         } else if (requestType === "createAnswer") {
             const answer = req.body.answer;
-            const name = req.body.name;
+            const email = req.body.email;
             const postId = req.body.postId;
             const addData = await query({
                 query: "INSERT INTO answers (postId, answer, answerer) VALUES (?, ?, ?)",
-                values: [postId, answer, name],
+                values: [postId, answer, email],
             });
             if (addData.insertId) { // If it worked
                 message = "success"
@@ -78,10 +78,10 @@ export default async function handler(req, res) {
                 message = "error"
             }
             record = {
-                record_id: addData.insertId, //The id of the record
+                "id": addData.insertId, //The id of the record
                 "postId": postId,
                 "answer": answer,      // The value we inserted
-                "answerer": name,
+                "answerer": email,
                 "created": new Date(),
             }
         } else if (requestType === "userExists") {

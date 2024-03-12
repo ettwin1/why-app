@@ -39,7 +39,7 @@ export default function Home() {
         setData(result.results);
     }
 
-    async function getData() {
+    async function getPosts() {
         const postData = {
             method: "GET",
             headers: {
@@ -106,7 +106,7 @@ export default function Home() {
     // OnLoad
     useEffect(() => {
         
-        getData();
+        getPosts();
     }, []);
 
     
@@ -127,12 +127,11 @@ export default function Home() {
                 
                 <div>
                     <AddPostForm onSubmit={addPost} />
-                    {/*<div className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={() => addPost(JSON.stringify({ "name": "test", "question": "test" }))} ><Button className="" /></div>*/}
-                    {/* {content}*/}
+
                     {data.map((item) => (
                         <QuestionPost key={item.id} postData={item} onSubmit={ addAnswer } />
-                        ))}
-                    {/*<p>{created}</p>*/}
+                    ))}
+
                     {!like ? (
                         <img className="m-4" onClick={click} src="images/like.png" />
                     ) : (
