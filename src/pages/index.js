@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import NavBar from "@/components/NavBar";
 import QuestionPost from "../components/QuestionPost"
 import AddPostForm from "../components/AddPostForm";
+import NewActivity from "../components/NewActivity";
+import { useSession, signOut, signIn } from 'next-auth/react';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,11 +21,20 @@ function Button({ onClick }) {
 
 export default function Home() {
 
-   
+    const [isSessionLoaded, setIsSessionLoaded] = useState(false);
     const [created, setCreated] = useState(false);
     const [like, setLike] = useState(false);
+    const [newActivityData, setNewActivityData] = useState([]);
+    
+    const { data: session, status } = useSession();
+    let email;
+    if (session && session.user) {
+        email = session.user.email;
+        
+    }
     
 
+    
 
     async function searchPosts(searchTerm) {
         const requestData = {
@@ -54,7 +65,22 @@ export default function Home() {
 
     };
 
+    async function getNewActivity() {
+        const requestData = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }
+        const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=activity&user=' + encodeURIComponent(email);
+        const response = await fetch(apiUrlEndpoint, requestData);
+        const result = await response.json();
+        console.log(result.results)
+        setNewActivityData(result.results); 
+    }
+
     const [data, setData] = useState([]);
+    
     async function addPost(postData) {
         const requestData = {
             method: "POST",
@@ -103,14 +129,19 @@ export default function Home() {
 
 
 
-    // OnLoad
+    // After load
     useEffect(() => {
-        
+
         getPosts();
+        //getNewActivity();
+
     }, []);
 
-    
-
+    useEffect(() => {
+        if (status === 'authenticated') {
+            getNewActivity();
+        }
+    }, [status])
     
 
     function click() {
@@ -123,24 +154,25 @@ export default function Home() {
     return (
         <>
             <NavBar onSubmit={searchPosts} />
-            <main className="flex min-h-screen flex-col items-center p-2">
-                
-                <div>
+            <main className="flex justify-center">
+                <div className="p-4">
                     <AddPostForm onSubmit={addPost} />
-
                     {data.map((item) => (
-                        <QuestionPost key={item.id} postData={item} onSubmit={ addAnswer } />
+                        <QuestionPost key={item.id} postData={item} onSubmit={addAnswer} />
                     ))}
 
                     {!like ? (
-                        <img className="m-4" onClick={click} src="images/like.png" />
+                        <img className="m-4" onClick={click} alt="" src="images/like.png" />
                     ) : (
-                        <img className="m-4" onClick={click} src="images/like_filled.png" />
-                    ) }
-                    
+                        <img className="m-4" onClick={click} alt="" src="images/like_filled.png" />
+                    )}
                 </div>
-
+                <div>
+                    <NewActivity newActivityData={newActivityData} userEmail={ email } />
+                </div>
             </main>
+
+            
         </>
     );
 }
