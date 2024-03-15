@@ -30,6 +30,12 @@ export default async function handler(req, res) {
                 "answers": answers,
                 "question": question,
             }
+        } else if (requestType == "activity") {
+            const email = req.query.user;
+            data = await query({
+                query: "SELECT posts.id, question FROM posts JOIN answers ON answers.postId = posts.id JOIN new_activity ON new_activity.answerId = answers.id WHERE asker = '"+email+"' GROUP BY posts.id ORDER BY count(answers.id) DESC; ",
+                values: [],
+            });
         }
 
         res.status(200).json({ results: data});
@@ -101,6 +107,21 @@ export default async function handler(req, res) {
             record = {
                 "Does User Exist": boolean
             };
+        } else if (requestType === "deleteActivity") {
+            const email = req.body.email;
+            const postId = req.body.postId;
+
+            const addData = await query({
+                query: "DELETE FROM new_activity WHERE(userId, answerId) IN(SELECT subquery.asker, subquery.id FROM( SELECT answers.id, asker FROM posts JOIN answers ON answers.postId = posts.id JOIN new_activity ON new_activity.answerId = answers.id WHERE asker = '" + email + "' and posts.id = " + postId + " ) AS subquery); ",
+                values: [],
+            });
+            if (addData.affectedRows) { // If it worked
+                message = "success"
+                record = addData;
+            } else {
+                message = "error"
+            }
+            
         }
         res.status(200).json({ response: message, record:record});
     }

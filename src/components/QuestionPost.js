@@ -4,7 +4,7 @@ import Link from 'next/link';
 const QuestionPost = ({postData, onSubmit}) => {
 
     return (
-        <div className="bg-white p-4 shadow-md rounded-md max-w-lg mx-auto mt-4" >
+        <div className="bg-white p-4 shadow-md rounded-md max-w-lg mt-4" >
             <div className="mb-4">
                 <img className="rounded-full, w-12, h-12" src={postData.img} />
                 <p className="font-bold">{postData.name}</p>
