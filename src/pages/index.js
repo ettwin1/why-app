@@ -130,14 +130,10 @@ export default function Home() {
 
 
     useEffect(() => {
-
-            getPosts();
-    }, [])
-
-
-    useEffect(() => {
         if (status === 'authenticated') {
             getNewActivity();
+            getPosts();
+        } else if (status === 'unauthenticated') {
             getPosts();
         }
     }, [status])

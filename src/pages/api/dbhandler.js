@@ -26,8 +26,9 @@ export default async function handler(req, res) {
             });
         } else if (requestType === "answers") {
             const postId = req.query.id;
+            const email = req.query.email;
             const answers = await query({
-                query: "SELECT id, postId, answer, answerer, created, img, name FROM answers LEFT JOIN users ON users.email = answers.answerer WHERE postId = " + postId,
+                query: "SELECT id, postId, answer, answerer, created, img, name, count(answer_likes.answerId) likes, (Select count(answerId) from answer_likes where answer_likes.userId='"+email+"' and answer_likes.answerId=answers.id) liked FROM answers LEFT JOIN users ON users.email = answers.answerer LEFT JOIN answer_likes on answer_likes.answerId = answers.id WHERE postId = " + postId + " GROUP BY answers.id;",
                 values: [],
             });
             const question = await query({
@@ -153,6 +154,37 @@ export default async function handler(req, res) {
 
             const deleteData = await query({
                 query: "DELETE FROM likes WHERE userId = '" + email + "' and postId = " + postId + "; ",
+                values: [],
+            });
+            if (deleteData.affectedRows > 0) { // If it worked
+                message = "success"
+                record = deleteData;
+            } else {
+                message = "error"
+            }
+        } else if (requestType === "addAnswerLike") {
+            const email = req.body.email;
+            const answerId = req.body.answerId;
+
+            const addData = await query({
+                query: "INSERT INTO answer_likes (userId, answerId) VALUES('" + email + "', " + answerId + "); ",
+                values: [],
+            });
+            if (addData.affectedRows > 0) { // If it worked
+                message = "success"
+            } else {
+                message = "error"
+            }
+            record = {
+                "userId": email,
+                "answerId": answerId,
+            }
+        } else if (requestType === "removeAnswerLike") {
+            const email = req.body.email;
+            const answerId = req.body.answerId;
+
+            const deleteData = await query({
+                query: "DELETE FROM answer_likes WHERE userId = '" + email + "' and answerId = " + answerId + "; ",
                 values: [],
             });
             if (deleteData.affectedRows > 0) { // If it worked
