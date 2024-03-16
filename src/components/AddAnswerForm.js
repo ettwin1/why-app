@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession, signIn } from 'next-auth/react';
 
 const AddAnswerForm = ({ onSubmit, postId }) => {
     const { data: session } = useSession();
@@ -18,6 +18,10 @@ const AddAnswerForm = ({ onSubmit, postId }) => {
             onSubmit(data);
             form.target.answer.value = "";
             form.target.answer.placeholder = "Answer Submitted";
+        } else {
+            signIn('google', {
+                callbackUrl: '/signingIn', // Redirect URL after successful sign-in
+            });
         }
 
     }

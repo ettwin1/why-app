@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession, signIn } from 'next-auth/react';
 
 const AddPostForm = ({ onSubmit }) => {
     const { data: session } = useSession();
@@ -22,6 +22,9 @@ const AddPostForm = ({ onSubmit }) => {
             
         } else {
             // Go to login screen
+            signIn('google', {
+                callbackUrl: '/signingIn', // Redirect URL after successful sign-in
+            });
         } 
         
     }
