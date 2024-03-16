@@ -23,7 +23,7 @@ export default function Home() {
 
     const [isSessionLoaded, setIsSessionLoaded] = useState(false);
     const [created, setCreated] = useState(false);
-    const [like, setLike] = useState(false);
+    
     const [newActivityData, setNewActivityData] = useState([]);
     
     const { data: session, status } = useSession();
@@ -57,7 +57,9 @@ export default function Home() {
                 "Content-Type": "application/json",
             },
         }
-        const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=all';
+        console.log("email: ", email);
+        const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=all&email='+email;
+
         const response = await fetch(apiUrlEndpoint, postData);
         const result = await response.json();
         console.log(result)
@@ -127,27 +129,21 @@ export default function Home() {
     };
 
 
-
-
-    // After load
     useEffect(() => {
 
-        getPosts();
-        //getNewActivity();
+            getPosts();
+    }, [])
 
-    }, []);
 
     useEffect(() => {
         if (status === 'authenticated') {
             getNewActivity();
+            getPosts();
         }
     }, [status])
     
 
-    function click() {
-        if (!like) setLike(true);
-        else setLike(false);
-    }
+    
 
 
 
@@ -158,14 +154,8 @@ export default function Home() {
                 <div className="p-4">
                     <AddPostForm onSubmit={addPost} />
                     {data.map((item) => (
-                        <QuestionPost key={item.id} postData={item} onSubmit={addAnswer} />
+                        <QuestionPost key={item.id} postData={item} userEmail={email} onSubmit={addAnswer} />
                     ))}
-
-                    {!like ? (
-                        <img className="m-4" onClick={click} alt="" src="images/like.png" />
-                    ) : (
-                        <img className="m-4" onClick={click} alt="" src="images/like_filled.png" />
-                    )}
                 </div>
                 <div>
                     <NewActivity newActivityData={newActivityData} userEmail={ email } />
