@@ -2,11 +2,19 @@ import { useRouter } from 'next/router';
 import NavBar from '../components/NavBar';
 import { useState, useEffect } from 'react';
 import AnswerPost from '../components/AnswerPost';
+import { useSession } from 'next-auth/react';
 
 
 const AnswersPage = ({ receivedData }) => {
     const router = useRouter();
     const postId = router.query.id || receivedData;
+
+    const { data: session, status } = useSession();
+    let email;
+    if (session && session.user) {
+        email = session.user.email;
+
+    }
 
     async function searchPosts(searchTerm) {
         const requestData = {
@@ -29,7 +37,7 @@ const AnswersPage = ({ receivedData }) => {
                 "Content-Type": "application/json",
             },
         }
-        const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=answers&id='+postId;
+        const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=answers&id=' + postId + '&email=' + encodeURIComponent(email);
         const response = await fetch(apiUrlEndpoint, postData);
         const result = await response.json();
         console.log(result)
@@ -41,11 +49,12 @@ const AnswersPage = ({ receivedData }) => {
     const [answers, setAnswers] = useState([]);
     const [question, setQuestion] = useState([]);
 
-    // OnLoad
-    useEffect(() => {
 
-        getAnswers();
-    }, []);
+    useEffect(() => {
+        if (status === 'authenticated' || status === 'unauthenticated') {
+            getAnswers();
+        }
+    }, [status])
 
 
     return (
@@ -58,7 +67,7 @@ const AnswersPage = ({ receivedData }) => {
                     <h1>{question}</h1>
                     <h1>Answers:</h1>
                     {answers.map((item) => (
-                        <AnswerPost key={item.id} answerData={item} />
+                        <AnswerPost key={item.id} answerData={item} userEmail={email} />
                     ))}
                    
 
