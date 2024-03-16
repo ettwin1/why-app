@@ -57,7 +57,9 @@ export default function Home() {
                 "Content-Type": "application/json",
             },
         }
+        console.log("email: ", email);
         const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=all&email='+email;
+
         const response = await fetch(apiUrlEndpoint, postData);
         const result = await response.json();
         console.log(result)
@@ -127,7 +129,10 @@ export default function Home() {
     };
 
 
+    useEffect(() => {
 
+            getPosts();
+    }, [])
 
 
     useEffect(() => {

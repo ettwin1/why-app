@@ -7,10 +7,17 @@ export default async function handler(req, res) {
         const requestType = req.query.requestType;
         if (requestType === "all") {
             const email = req.query.email;
-            data = await query({
-                query: "SELECT id, question, asker, created, img, name, count(likes.postId) likes, (Select count(userId) from likes where likes.userId='"+email+"' and likes.postId=posts.id) liked FROM posts LEFT JOIN users ON users.email = posts.asker LEFT JOIN likes on likes.postId = posts.id GROUP BY id; ",
-                values: [],
-            });
+            if (email) {
+                data = await query({
+                    query: "SELECT id, question, asker, created, img, name, count(likes.postId) likes, (Select count(userId) from likes where likes.userId='" + email + "' and likes.postId=posts.id) liked FROM posts LEFT JOIN users ON users.email = posts.asker LEFT JOIN likes on likes.postId = posts.id GROUP BY id order by likes desc; ",
+                    values: [],
+                });
+            } else {
+                data = await query({
+                    query: "SELECT id, question, asker, created, img, name, count(likes.postId) likes FROM posts LEFT JOIN users ON users.email = posts.asker LEFT JOIN likes on likes.postId = posts.id GROUP BY id order by likes desc;  ",
+                    values: [],
+                });
+            }
         } else if (requestType === "search") {
             const searchTerm = req.query.term;
             data = await query({

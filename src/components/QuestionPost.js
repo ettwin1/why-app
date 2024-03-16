@@ -2,6 +2,7 @@ import AddAnswerForm from "./AddAnswerForm";
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
+import { signIn } from 'next-auth/react';
 
 const QuestionPost = ({ postData, onSubmit, userEmail }) => {
     
@@ -49,16 +50,21 @@ const QuestionPost = ({ postData, onSubmit, userEmail }) => {
     }
 
     function like() {
-
-        if (!liked) {
-            setLike(true);
-            addLike();
-            changeLikes(likes+1);
-        }
-        else {
-            setLike(false);
-            removeLike();
-            changeLikes(likes - 1);
+        if (userEmail) {
+            if (!liked) {
+                setLike(true);
+                addLike();
+                changeLikes(likes + 1);
+            }
+            else {
+                setLike(false);
+                removeLike();
+                changeLikes(likes - 1);
+            }
+        } else {
+            signIn('google', {
+                callbackUrl: '/signingIn', // Redirect URL after successful sign-in
+            });
         }
     }
 
