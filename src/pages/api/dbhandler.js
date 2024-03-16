@@ -6,8 +6,9 @@ export default async function handler(req, res) {
         var data = {};
         const requestType = req.query.requestType;
         if (requestType === "all") {
+            const email = req.query.email;
             data = await query({
-                query: "SELECT id, question, asker, created, img, name FROM posts LEFT JOIN users ON users.email = posts.asker; ",
+                query: "SELECT id, question, asker, created, img, name, count(likes.postId) likes, (Select count(userId) from likes where likes.userId='"+email+"' and likes.postId=posts.id) liked FROM posts LEFT JOIN users ON users.email = posts.asker LEFT JOIN likes on likes.postId = posts.id GROUP BY id; ",
                 values: [],
             });
         } else if (requestType === "search") {
@@ -111,17 +112,48 @@ export default async function handler(req, res) {
             const email = req.body.email;
             const postId = req.body.postId;
 
-            const addData = await query({
+            const deleteData = await query({
                 query: "DELETE FROM new_activity WHERE(userId, answerId) IN(SELECT subquery.asker, subquery.id FROM( SELECT answers.id, asker FROM posts JOIN answers ON answers.postId = posts.id JOIN new_activity ON new_activity.answerId = answers.id WHERE asker = '" + email + "' and posts.id = " + postId + " ) AS subquery); ",
                 values: [],
             });
-            if (addData.affectedRows) { // If it worked
+            if (deleteData.affectedRows > 0) { // If it worked
                 message = "success"
-                record = addData;
+                record = deleteData;
             } else {
                 message = "error"
             }
             
+        } else if (requestType === "addLike") {
+            const email = req.body.email;
+            const postId = req.body.postId;
+
+            const addData = await query({
+                query: "INSERT INTO likes (userId, postId) VALUES('" + email + "', " + postId + "); ",
+                values: [],
+            });
+            if (addData.affectedRows > 0) { // If it worked
+                message = "success"
+            } else {
+                message = "error"
+            }
+            record = {
+                "userId": email,
+                "postId": postId,
+            }
+        } else if (requestType === "removeLike") {
+            const email = req.body.email;
+            const postId = req.body.postId;
+
+            const deleteData = await query({
+                query: "DELETE FROM likes WHERE userId = '" + email + "' and postId = " + postId + "; ",
+                values: [],
+            });
+            if (deleteData.affectedRows > 0) { // If it worked
+                message = "success"
+                record = deleteData;
+            } else {
+                message = "error"
+            }
         }
         res.status(200).json({ response: message, record:record});
     }

@@ -1,6 +1,7 @@
 "use client";
 import React from 'react';
 import { useSession, signOut, signIn } from 'next-auth/react';
+import Image from 'next/image';
 
 const SignInButton = ({ className }) => {
 
@@ -19,7 +20,13 @@ const SignInButton = ({ className }) => {
             <div className={className}>
                 <span className="m-2">{session.user.email}</span>
                 <span className="m-2">{session.user.name}</span>
-                <img className="inline" src={session.user.image} alt={session.user.name + " Photo"} />
+                <Image
+                    className="inline"
+                    src={session.user.image}
+                    alt={session.user.name + " Photo"}
+                    width={96} // Set the width of the image
+                    height={96} // Set the height of the image
+                />
                 <button className="m-2" onClick={() => signOut() }>Sign out</button>
             </div>
         );
