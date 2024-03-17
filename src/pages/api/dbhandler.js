@@ -9,12 +9,12 @@ export default async function handler(req, res) {
             const email = req.query.email;
             if (email) {
                 data = await query({
-                    query: "SELECT id, question, asker, created, img, name, count(likes.postId) likes, (Select count(userId) from likes where likes.userId='" + email + "' and likes.postId=posts.id) liked FROM posts LEFT JOIN users ON users.email = posts.asker LEFT JOIN likes on likes.postId = posts.id GROUP BY id order by likes desc; ",
+                    query: "SELECT id, question, asker, created, img, name, count(likes.postId) likes, (Select count(userId) from likes where likes.userId='" + email + "' and likes.postId=posts.id) liked FROM posts LEFT JOIN users ON users.email = posts.asker LEFT JOIN likes on likes.postId = posts.id GROUP BY id ORDER BY liked, likes desc; ",
                     values: [],
                 });
             } else {
                 data = await query({
-                    query: "SELECT id, question, asker, created, img, name, count(likes.postId) likes FROM posts LEFT JOIN users ON users.email = posts.asker LEFT JOIN likes on likes.postId = posts.id GROUP BY id order by likes desc;  ",
+                    query: "SELECT id, question, asker, created, img, name, count(likes.postId) likes FROM posts LEFT JOIN users ON users.email = posts.asker LEFT JOIN likes on likes.postId = posts.id GROUP BY id ORDER BY liked, likes desc;  ",
                     values: [],
                 });
             }
@@ -28,7 +28,7 @@ export default async function handler(req, res) {
             const postId = req.query.id;
             const email = req.query.email;
             const answers = await query({
-                query: "SELECT id, postId, answer, answerer, created, img, name, count(answer_likes.answerId) likes, (Select count(answerId) from answer_likes where answer_likes.userId='"+email+"' and answer_likes.answerId=answers.id) liked FROM answers LEFT JOIN users ON users.email = answers.answerer LEFT JOIN answer_likes on answer_likes.answerId = answers.id WHERE postId = " + postId + " GROUP BY answers.id;",
+                query: "SELECT id, postId, answer, answerer, created, img, name, count(answer_likes.answerId) likes, (Select count(answerId) from answer_likes where answer_likes.userId='" + email + "' and answer_likes.answerId=answers.id) liked FROM answers LEFT JOIN users ON users.email = answers.answerer LEFT JOIN answer_likes on answer_likes.answerId = answers.id WHERE postId = " + postId + " GROUP BY answers.id ORDER BY likes desc;",
                 values: [],
             });
             const question = await query({
