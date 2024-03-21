@@ -4,11 +4,16 @@ export default function IndexPage() {
     if (status === 'loading') return <h1> loading... please wait</h1>;
     if (status === 'authenticated') {
         return (
-            <div>
-                <h1> hi {data.user.name}</h1>
-                <img src={data.user.image} alt={data.user.name + ' photo'} />
-                <button onClick={signOut}>sign out</button>
-            </div>
+            <>
+                <div>
+                    <h1> hi {data.user.name}</h1>
+                    <img src={data.user.image} alt={data.user.name + ' photo'} />
+                    <button onClick={signOut}>sign out</button>
+                </div>
+                <div>
+                    <input type="text" class="w-640 h-10 border border-gray-300 rounded-md px-4" />
+                </div>
+            </>
         );
     }
     return (

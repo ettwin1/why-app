@@ -146,17 +146,17 @@ export default function Home() {
     return (
         <>
             <NavBar onSubmit={searchPosts} />
-            <main className="flex justify-center">
-                <div className="p-4">
+            <div className="flex justify-center">
+                <div className="mr-8 w-640">
                     <AddPostForm onSubmit={addPost} />
                     {data.map((item) => (
                         <QuestionPost key={item.id} postData={item} userEmail={email} onSubmit={addAnswer} />
                     ))}
                 </div>
-                <div>
+                <div className="">
                     <NewActivity newActivityData={newActivityData} userEmail={ email } />
                 </div>
-            </main>
+            </div>
 
             
         </>

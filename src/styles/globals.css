@@ -43,3 +43,15 @@ a{
 span{
     display: inline
 }
+
+.w-640{
+    width: 640px;
+}
+
+.text-xxl{
+    font-size: 24px;
+}
+
+div{
+    font-family: "Inter";
+}

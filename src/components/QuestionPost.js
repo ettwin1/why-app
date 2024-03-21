@@ -69,25 +69,24 @@ const QuestionPost = ({ postData, onSubmit, userEmail }) => {
     }
 
     return (
-        <div className="bg-white p-4 shadow-md rounded-md max-w-lg mt-4" >
-            <div className="mb-4">
-                <img className="rounded-full" src={postData.img} width={48} height={48} alt="Profile pic" />
-                <p className="font-bold">{postData.name}</p>
-                <p className="text-gray-500 text-sm ">{new Date(postData.created).getFullYear()}</p>
+        <div className="bg-white p-4 shadow-md rounded-md mt-8" >
+            <div className="">
+                <img className="rounded-full inline" src={postData.img} width={48} height={48} alt="Profile pic" />
+                <p className="inline ml-3 text-gray-600">{postData.name}</p>
+               {/* <p className="text-gray-500 text-sm ">{new Date(postData.created).getFullYear()}</p>*/}
             </div>
-            <div >{postData.question}</div>
-            <div className="flex justify-between">
+            <div className="text-xxl p-2">{postData.question}</div>
+            <div className="flex justify-between mb-2">
                 <div>
                     {!liked ? (
                         <img className="inline" onClick={like} alt="" width={16} height={16} src="images/like.png" />
                     ) : (
                         <img className="inline" onClick={like} alt="" width={16} height={16} src="images/like_filled.png" />
                     )}
-                    <span>{likes}</span>
+                    <span className="ml-2">{likes}</span>
                 </div>    
-                <div className="text-right "><Link href={`/answers?id=${encodeURIComponent(postData.id)}`}>See answers here</Link></div>
+                <div className="text-right text-sky-600"><Link href={`/answers?id=${encodeURIComponent(postData.id)}`}>See answers here</Link></div>
             </div>
-            <hr />
             <AddAnswerForm onSubmit={onSubmit} postId={postData.id} />
         </div>
     );

@@ -29,15 +29,15 @@ const AddAnswerForm = ({ onSubmit, postId }) => {
     return (
         <form onSubmit={handleSubmit}>
             <input
-                className=""
+                className="w-11/12 h-8 bg-gray-100 p-4"
                 type="text"
                 name="answer"
                 maxLength="2048"
-                placeholder="Type Answer Here"
+                placeholder="Because..."
             />
-
-            <button type="submit">Add</button>
-
+           
+            <button className="bg-gray-200 rounded p-1 px-2" type="submit">Add</button>
+  
         </form>
     );
 }
