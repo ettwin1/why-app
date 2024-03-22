@@ -5,8 +5,8 @@ import SignInButton from "./SignInButton";
 const NavBar = ({onSubmit}) => {
     return (
         <div className="p-4 bg-white shadow">
-            <div className="flex gap-4 ">
-                <h1 className="text-xl font-medium">Why App</h1>
+            <div className="flex justify-between ">
+                <a href="/"><img src="./images/logo.png" /></a>
                 <div className="ml-auto"><SignInButton /></div>   
             </div>
             <SearchBar className="text-center" onSubmit={onSubmit} />
