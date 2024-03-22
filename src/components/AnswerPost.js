@@ -67,20 +67,27 @@ const AnswerPost = ({ answerData, userEmail }) => {
         }
     }
 
+    function returnDate(date) {
+        const text = date.toDateString()
+        return text;
+    }
+
     return (
-        <div className="bg-white p-4 shadow-md rounded-md max-w-lg mx-auto mt-4" >
-            <div className="mb-4">
-                <img className="rounded-full" width={48} height={48} src={answerData.img} />
-                <p className="font-bold">{answerData.name}</p>
-                <p className="text-gray-500 text-sm ">{new Date(answerData.created).getFullYear()}</p>
+        <div className="bg-white p-4 shadow-md rounded-md max-w-lg mx-auto mt-8" >
+            <div className="flex justify-between">
+                <div>
+                    <img className="rounded-full inline" width={40} height={40} src={answerData.img} />
+                    <p className="inline ml-3 text-gray-600">{answerData.name}</p>
+                </div>
+                <p className="text-gray-500 text-sm mt-2">{returnDate(new Date(answerData.created))}</p>
             </div>
-            <div >{answerData.answer}</div>
+            <div className="p-2">{answerData.answer}</div>
             {!liked ? (
                 <img className="inline" onClick={like} alt="" width={16} height={16} src="images/like.png" />
             ) : (
                 <img className="inline" onClick={like} alt="" width={16} height={16} src="images/like_filled.png" />
             )}
-            <span>{likes}</span>
+            <span className="ml-2">{likes}</span>
         </div>
     );
 }

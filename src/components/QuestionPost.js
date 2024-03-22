@@ -71,7 +71,7 @@ const QuestionPost = ({ postData, onSubmit, userEmail }) => {
     return (
         <div className="bg-white p-4 shadow-md rounded-md mt-8" >
             <div className="">
-                <img className="rounded-full inline" src={postData.img} width={48} height={48} alt="Profile pic" />
+                <img className="rounded-full inline" src={postData.img} width={40} height={40} alt="Profile pic" />
                 <p className="inline ml-3 text-gray-600">{postData.name}</p>
                {/* <p className="text-gray-500 text-sm ">{new Date(postData.created).getFullYear()}</p>*/}
             </div>

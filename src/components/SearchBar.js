@@ -3,7 +3,10 @@ const SearchBar = ({ className, onSubmit }) => {
 
     const handleSubmit = (form) => {
         form.preventDefault();
-        const searchTerm = form.target.searchTerm.value;
+        let searchTerm = form.target.searchTerm.value;
+        searchTerm = searchTerm.replace("?", "") //Only replaces the first match
+        //Insert more string manipulation to parse keywords out of the
+
         onSubmit(searchTerm);
 
     }
