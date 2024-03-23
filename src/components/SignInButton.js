@@ -19,8 +19,6 @@ const SignInButton = ({ className }) => {
         return (
             <div className={className}>
                 <span className="m-2">{session.user.name}</span>
-                
-                
                 <Image
                     className="inline rounded-full"
                     src={session.user.image}

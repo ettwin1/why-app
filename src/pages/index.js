@@ -10,14 +10,6 @@ import { useSession, signOut, signIn } from 'next-auth/react';
 
 const inter = Inter({ subsets: ["latin"] });
 
-function Button({ onClick }) {
-    return (
-        <button onClick={onClick}>
-            Create Post
-        </button>
-    );
-}
-
 
 export default function Home() {
 
@@ -157,7 +149,6 @@ export default function Home() {
                     <NewActivity newActivityData={newActivityData} userEmail={ email } />
                 </div>
             </div>
-
             
         </>
     );

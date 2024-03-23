@@ -84,8 +84,13 @@ const QuestionPost = ({ postData, onSubmit, userEmail }) => {
                         <img className="inline" onClick={like} alt="" width={16} height={16} src="images/like_filled.png" />
                     )}
                     <span className="ml-2">{likes}</span>
-                </div>    
-                <div className="text-right text-sky-600"><Link href={`/answers?id=${encodeURIComponent(postData.id)}`}>See answers here</Link></div>
+                </div>
+                {(postData.answers > 0) ? (
+                    <div className="text-right text-sky-600"><Link href={`/answers?id=${encodeURIComponent(postData.id)}`}>See answers here</Link></div>
+                ) : (
+                    <div className="text-right">No answers</div>
+                )}
+                
             </div>
             <AddAnswerForm onSubmit={onSubmit} postId={postData.id} />
         </div>
