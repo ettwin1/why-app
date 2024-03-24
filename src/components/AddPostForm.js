@@ -30,18 +30,23 @@ const AddPostForm = ({ onSubmit }) => {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                className=""
-                type="text"
-                name="question"
-                maxLength="255"
-                placeholder="Type Question Here"
-            />
+         <div className="bg-white p-4 shadow-md rounded-md mt-8" >
+            <div className="text-xxl mb-2">Add Question</div>
+            <form onSubmit={handleSubmit}>
+                <input
+                    className="w-10/12 h-8 bg-gray-100 p-4"
+                    type="text"
+                    name="question"
+                    maxLength="255"
+                    placeholder="Why..."
+                />
 
-            <button type="submit">Add Post</button>
-            
-        </form>
+                <button className="bg-gray-200 rounded p-1 px-2" type="submit">Add Post</button>
+
+            </form>         
+        </div>
+
+       
     );
 }
 

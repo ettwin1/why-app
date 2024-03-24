@@ -27,11 +27,11 @@ const NewActivity = ({ newActivityData, userEmail }) => {
     }
 
     return (
-        <div className="bg-white p-4 shadow-md rounded-md max-w-lg mt-4" >
-            <p>New Activity</p>
+        <div className="bg-white p-4 shadow-md rounded-md mt-8 w-64" >
+            <p className="text-xxl">New Activity</p>
             {(newActivityData.toString() === "") ? (<p>No new activity</p>) : (
                 newActivityData.map((post) => (
-                <div key={post.id} className="text-left "><a onClick={() => onLinkClick(post.id)}>{post.question}</a></div>
+                    <div key={post.id} className="text-left text-sky-600 p-1"><a onClick={() => onLinkClick(post.id)}>{post.question}</a></div>
                 ))
             )}
             
