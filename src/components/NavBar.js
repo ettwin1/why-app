@@ -9,7 +9,7 @@ const NavBar = ({onSubmit}) => {
                 <a href="/"><img src="./images/logo.png" /></a>
                 <div className="ml-auto"><SignInButton /></div>   
             </div>
-            <SearchBar className="text-center" onSubmit={onSubmit} />
+            <SearchBar className="text-center " onSubmit={onSubmit} />
         </div>
     );
    
