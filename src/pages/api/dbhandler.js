@@ -20,10 +20,22 @@ export default async function handler(req, res) {
             }
         } else if (requestType === "search") {
             const searchTerm = req.query.term;
-            data = await query({
-                query: "SELECT id, question, asker, created, img, name FROM posts LEFT JOIN users ON users.email = posts.asker WHERE question LIKE '%" + searchTerm + "%'",
-                values: [],
-            });
+            const email = req.query.email;
+            if (email) {
+                data = await query({
+                    query: "SELECT id, question, asker, created, img, name, count(likes.postId) likes, (Select count(userId) from likes where likes.userId='" + email + "' and likes.postId=posts.id) liked, (Select count(id) from answers where answers.postId=posts.id) answers FROM posts LEFT JOIN users ON users.email = posts.asker LEFT JOIN likes on likes.postId = posts.id WHERE question LIKE '%" + searchTerm + "%' GROUP BY id ORDER BY liked, likes desc;",
+                    values: [],
+                });
+            } else {
+                data = await query({
+                    query: "SELECT id, question, asker, created, img, name, count(likes.postId) likes FROM posts LEFT JOIN users ON users.email = posts.asker LEFT JOIN likes on likes.postId = posts.id WHERE question LIKE '%" + searchTerm + "%' GROUP BY id ORDER BY liked, likes desc;",
+                    values: [],
+                });
+            }
+            //data = await query({
+            //    query: "SELECT id, question, asker, created, img, name FROM posts LEFT JOIN users ON users.email = posts.asker WHERE question LIKE '%" + searchTerm + "%'",
+            //    values: [],
+            //});
         } else if (requestType === "answers") {
             const postId = req.query.id;
             const email = req.query.email;
