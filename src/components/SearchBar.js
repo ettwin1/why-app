@@ -1,13 +1,13 @@
+import { useRouter } from 'next/router';
 
-const SearchBar = ({ className, onSubmit }) => {
-
+const SearchBar = ({ className, searchTerm }) => {
+    const router = useRouter();
     const handleSubmit = (form) => {
         form.preventDefault();
-        let searchTerm = form.target.searchTerm.value;
-        searchTerm = searchTerm.replace("?", "") //Only replaces the first match
-        //Insert more string manipulation to parse keywords out of the
+        let term = form.target.searchTerm.value;
+        term = term.replace("?", "") //Only replaces the first match
 
-        onSubmit(searchTerm);
+        router.push("/?search=" + encodeURIComponent(term));
 
     }
 
@@ -19,6 +19,7 @@ const SearchBar = ({ className, onSubmit }) => {
                 name="searchTerm"
                 maxLength="255"
                 placeholder="Search Here"
+                defaultValue={searchTerm}
             />
 
             <button className="bg-gray-200 rounded p-1 px-2" type="submit">Search</button>

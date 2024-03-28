@@ -73,7 +73,7 @@ const AnswerPost = ({ answerData, userEmail }) => {
     }
 
     return (
-        <div className="bg-white p-4 shadow-md rounded-md max-w-lg mx-auto mt-8" >
+        <div className="bg-white p-4 shadow-md rounded-md w-640 mx-auto mt-8" >
             <div className="flex justify-between">
                 <div>
                     <img className="rounded-full inline" width={40} height={40} src={answerData.img} />

@@ -7,11 +7,12 @@ import QuestionPost from "../components/QuestionPost"
 import AddPostForm from "../components/AddPostForm";
 import NewActivity from "../components/NewActivity";
 import { useSession, signOut, signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const inter = Inter({ subsets: ["latin"] });
 
 
-export default function Home() {
+export default function Home({ searchQuery }) {
 
     const [isSessionLoaded, setIsSessionLoaded] = useState(false);
     const [created, setCreated] = useState(false);
@@ -25,10 +26,13 @@ export default function Home() {
         
     }
     
-
+    const router = useRouter();
+    const searchTerm = router.query.search || searchQuery || "";
     
 
     async function searchPosts(searchTerm) {
+        //Insert more string manipulation to parse keywords out of the search term
+        console.log("search posts search term: ",searchTerm)
         const requestData = {
             method: "GET",
             headers: {
@@ -38,7 +42,7 @@ export default function Home() {
         const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=search&term=' + searchTerm + '&email=' + email;
         const response = await fetch(apiUrlEndpoint, requestData);
         const result = await response.json();
-        console.log(result)
+        console.log("Search results: ", result);
         setData(result.results);
     }
 
@@ -127,11 +131,15 @@ export default function Home() {
     useEffect(() => {
         if (status === 'authenticated') {
             getNewActivity();
-            getPosts();
+            if (searchTerm == "") {
+                getPosts();
+            } else {
+                searchPosts(searchTerm);
+            }
         } else if (status === 'unauthenticated') {
             getPosts();
         }
-    }, [status])
+    }, [status, searchTerm])
     
 
     
@@ -140,7 +148,7 @@ export default function Home() {
 
     return (
         <>
-            <NavBar onSubmit={searchPosts} />
+            <NavBar searchTerm={searchTerm} />
             <div className="flex justify-center">
                 <div className="mr-8 w-640">
                     <AddPostForm onSubmit={addPost} />
@@ -155,4 +163,16 @@ export default function Home() {
             
         </>
     );
+}
+
+//Get Query Parameters (when page is loaded directly from the server)
+export async function getServerSideProps({ query }) {
+
+    const receivedData = query.data || "";
+
+    return {
+        props: {
+            receivedData,
+        },
+    };
 }
