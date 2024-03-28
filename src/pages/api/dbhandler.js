@@ -43,18 +43,28 @@ export default async function handler(req, res) {
                 query: "SELECT id, postId, answer, answerer, created, img, name, count(answer_likes.answerId) likes, (Select count(answerId) from answer_likes where answer_likes.userId='" + email + "' and answer_likes.answerId=answers.id) liked FROM answers LEFT JOIN users ON users.email = answers.answerer LEFT JOIN answer_likes on answer_likes.answerId = answers.id WHERE postId = " + postId + " GROUP BY answers.id ORDER BY likes desc;",
                 values: [],
             });
-            const question = await query({
-                query: "SELECT question FROM posts WHERE id = " + postId,
-                values: [],
-            });
+            let questionData;
+
+            if (email) {
+                questionData = await query({
+                    query: "SELECT id, question, asker, created, img, name, count(likes.postId) likes, (Select count(userId) from likes where likes.userId='" + email + "' and likes.postId=posts.id) liked, (Select count(id) from answers where answers.postId=posts.id) answers FROM posts LEFT JOIN users ON users.email = posts.asker LEFT JOIN likes on likes.postId = posts.id WHERE id = " + postId+ " GROUP BY id ORDER BY liked, likes desc; ",
+                    values: [],
+                });
+            } else {
+                questionData = await query({
+                    query: "SELECT id, question, asker, created, img, name, count(likes.postId) likes FROM posts LEFT JOIN users ON users.email = posts.asker LEFT JOIN likes on likes.postId = posts.id WHERE id = " + postId + " GROUP BY id ORDER BY liked, likes desc;  ",
+                    values: [],
+                });
+            }
+
             data = {
                 "answers": answers,
-                "question": question,
+                "questionData": questionData,
             }
         } else if (requestType == "activity") {
             const email = req.query.user;
             data = await query({
-                query: "SELECT posts.id, question FROM posts JOIN answers ON answers.postId = posts.id JOIN new_activity ON new_activity.answerId = answers.id WHERE asker = '"+email+"' GROUP BY posts.id ORDER BY count(answers.id) DESC; ",
+                query: "SELECT posts.id, question FROM posts JOIN answers ON answers.postId = posts.id JOIN new_activity ON new_activity.answerId = answers.id WHERE asker = '" + email + "' GROUP BY posts.id ORDER BY count(answers.id) DESC; ",
                 values: [],
             });
         }
@@ -79,7 +89,7 @@ export default async function handler(req, res) {
             }
 
             const [userData] = await query({
-                query: "SELECT id, question, asker, created, img, name FROM posts LEFT JOIN users ON users.email = posts.asker WHERE asker = '" + email + "';",
+                query: "SELECT id, question, asker, created, img, name FROM posts LEFT JOIN users ON users.email = posts.asker WHERE asker = '" + email + "' and id = " + addData.insertId + ";",
                 values: [],
             });
 
@@ -104,12 +114,22 @@ export default async function handler(req, res) {
             } else {
                 message = "error"
             }
+
+            const [userData] = await query({
+                query: "SELECT id, created, img, name FROM answers LEFT JOIN users ON users.email = answers.answerer WHERE answerer = '" + email + "' and id = " + addData.insertId + ";",
+                values: [],
+            });
+
             record = {
                 "id": addData.insertId, //The id of the record
                 "postId": postId,
                 "answer": answer,      // The value we inserted
                 "answerer": email,
-                "created": new Date(),
+                "created": userData.created,
+                "img": userData.img,
+                "name": userData.name,
+                "liked": 0,
+                "likes": 0,
             }
         } else if (requestType === "userExists") {
             const email = req.body.email;

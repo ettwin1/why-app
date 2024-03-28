@@ -32,7 +32,6 @@ export default function Home({ searchQuery }) {
 
     async function searchPosts(searchTerm) {
         //Insert more string manipulation to parse keywords out of the search term
-        console.log("search posts search term: ",searchTerm)
         const requestData = {
             method: "GET",
             headers: {
@@ -137,7 +136,11 @@ export default function Home({ searchQuery }) {
                 searchPosts(searchTerm);
             }
         } else if (status === 'unauthenticated') {
-            getPosts();
+            if (searchTerm == "") {
+                getPosts();
+            } else {
+                searchPosts(searchTerm);
+            }
         }
     }, [status, searchTerm])
     

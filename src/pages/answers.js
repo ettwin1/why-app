@@ -3,6 +3,7 @@ import NavBar from '../components/NavBar';
 import { useState, useEffect } from 'react';
 import AnswerPost from '../components/AnswerPost';
 import { useSession } from 'next-auth/react';
+import AnswersNavBar from '../components/AnswersNavBar';
 
 
 const AnswersPage = ({ receivedData }) => {
@@ -16,19 +17,37 @@ const AnswersPage = ({ receivedData }) => {
 
     }
 
-    async function searchPosts(searchTerm) {
+    async function addAnswer(answerData) {
         const requestData = {
-            method: "GET",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
+            body: answerData,
         }
-        const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=search&term=' + searchTerm;
+
+        const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=createAnswer';
         const response = await fetch(apiUrlEndpoint, requestData);
         const result = await response.json();
-        console.log(result)
-        setData(result.results);
-    }
+        console.log("Answer submitted: ", result);
+        const newData = result.record;
+
+        setAnswers([
+            {
+                id: newData.id,
+                answer: newData.answer,
+                answerer: newData.answerer,
+                created: newData.created,
+                img: newData.img,
+                name: newData.name,
+                postId: newData.postId,
+                liked: 0,
+                likes: 0,
+            },
+            ...answers,
+        ]);
+        //const newAnswerData = result.record;
+    };
 
     async function getAnswers() {
         const postData = {
@@ -40,14 +59,14 @@ const AnswersPage = ({ receivedData }) => {
         const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=answers&id=' + postId + '&email=' + encodeURIComponent(email);
         const response = await fetch(apiUrlEndpoint, postData);
         const result = await response.json();
-        console.log(result)
+        console.log("Answers Request: ", result)
         setAnswers(result.results.answers);
-        setQuestion(result.results.question[0].question)
+        setQuestionData(result.results.questionData[0])
 
     };
 
     const [answers, setAnswers] = useState([]);
-    const [question, setQuestion] = useState([]);
+    const [questionData, setQuestionData] = useState([]);
 
 
     useEffect(() => {
@@ -59,18 +78,13 @@ const AnswersPage = ({ receivedData }) => {
 
     return (
         <>
-            
-            <NavBar onSubmit={searchPosts} />
-            <main className="flex min-h-screen flex-col items-center p-2">
 
+            <AnswersNavBar questionData={questionData} onAddAnswer={addAnswer} userEmail={email} />
+            <main className="flex min-h-screen flex-col items-center p-2">
                 <div>
-                    <h1>{question}</h1>
-                    <h1>Answers:</h1>
                     {answers.map((item) => (
                         <AnswerPost key={item.id} answerData={item} userEmail={email} />
-                    ))}
-                   
-
+                    ))}      
                 </div>
 
             </main>
