@@ -12,7 +12,9 @@ const SearchBar = ({ className, searchTerm }) => {
     }
 
     return (
+        
         <form className={className} onSubmit={handleSubmit}>
+            <img className="inline mr-2" src="./images/search_icon.png" width={24} height={24} />
             <input
                 className="w-640 h-8 bg-gray-100 p-4"
                 type="text"

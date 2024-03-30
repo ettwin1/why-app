@@ -78,7 +78,7 @@ const AnswersPage = ({ receivedData }) => {
 
     return (
         <>
-
+            
             <AnswersNavBar questionData={questionData} onAddAnswer={addAnswer} userEmail={email} />
             <main className="flex min-h-screen flex-col items-center p-2">
                 <div>

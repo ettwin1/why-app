@@ -152,7 +152,7 @@ export default function Home({ searchQuery }) {
     return (
         <>
             <NavBar searchTerm={searchTerm} />
-            <div className="flex justify-center">
+            <div className="mt-20 flex justify-center">
                 <div className="mr-8 w-640">
                     <AddPostForm onSubmit={addPost} />
                     {data.map((item) => (

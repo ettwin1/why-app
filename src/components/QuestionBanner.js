@@ -76,20 +76,16 @@ const QuestionBanner = ({ questionData, onAddAnswer, userEmail }) => {
     }, [questionData]);
 
     return (
-        <div className="p-10">
-            {/*<div >*/}
-            {/*    <img className="rounded-full inline" src={questionData.img} width={40} height={40} alt="Profile pic" />*/}
-            {/*    <p className="inline ml-3 text-gray-600">{questionData.name}</p>*/}
-            {/*    <p className="inline text-gray-500 text-sm text-right ">{new Date(questionData.created).toDateString()}</p>*/}
-            {/*</div>*/}
+        <div className="p-8 px-16">
             <div className="flex justify-between items-center">
                 <div className="flex items-center">
-                    <img className="rounded-full inline" src={questionData.img} width={40} height={40} alt="Profile pic" />
-                    <p className="inline ml-3 text-gray-600">{questionData.name}</p>
+                    <img className="rounded-full" src={questionData.img} width={40} height={40} alt="Profile pic" />
+                    <p className=" ml-3 text-gray-600">{questionData.name}</p>
                 </div>
+                <h1 className="p-2 mt-4">{questionData.question}</h1>
                 <p className="text-gray-500 text-sm">{new Date(questionData.created).toDateString()}</p>
             </div>
-            <h1 className="p-2 text-center">{questionData.question}</h1>
+            
             <div className="flex items-center mb-2">
                 {!liked ? (
                     <img className="inline" onClick={like} alt="" width={16} height={16} src="images/like.png" />

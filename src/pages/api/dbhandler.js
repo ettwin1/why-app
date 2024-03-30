@@ -64,7 +64,7 @@ export default async function handler(req, res) {
         } else if (requestType == "activity") {
             const email = req.query.user;
             data = await query({
-                query: "SELECT posts.id, question FROM posts JOIN answers ON answers.postId = posts.id JOIN new_activity ON new_activity.answerId = answers.id WHERE asker = '" + email + "' GROUP BY posts.id ORDER BY count(answers.id) DESC; ",
+                query: "SELECT posts.id, question, count(posts.id) amount FROM posts JOIN answers ON answers.postId = posts.id JOIN new_activity ON new_activity.answerId = answers.id WHERE asker = '" + email + "' GROUP BY posts.id ORDER BY count(answers.id) DESC; ",
                 values: [],
             });
         }
