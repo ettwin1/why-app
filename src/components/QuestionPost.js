@@ -77,20 +77,15 @@ const QuestionPost = ({ postData, onSubmit, userEmail }) => {
     return (
         <div className="bg-white p-4 shadow-md rounded-md mt-8" >
             <Link href={`/answers?id=${encodeURIComponent(postData.id)}`}>
-            {/*<div className="">*/}
-            {/*    <img className="rounded-full inline" src={postData.img} width={40} height={40} alt="Profile pic" />*/}
-            {/*    <p className="inline ml-3 text-gray-600">{postData.name}</p>*/}
-            {/*   */}{/* <p className="text-gray-500 text-sm ">{new Date(postData.created).getFullYear()}</p>*/}
-                {/*</div>*/}
                 <div className="flex justify-between items-center">
                     <div className="flex items-center">
                         <img className="rounded-full inline" src={postData.img} width={40} height={40} alt="Profile pic" />
                         <p className="inline ml-3 text-gray-600">{postData.name}</p>
                     </div>
-                    {/*<p className="">{postData.answers} answers {">"}</p>*/}
                 </div>
                 <div className="text-xxl p-2">{postData.question}</div>
             </Link>
+
             <div className="flex justify-between mb-2">
                 <div>
                     {!liked ? (
@@ -102,9 +97,9 @@ const QuestionPost = ({ postData, onSubmit, userEmail }) => {
                 </div>
                 {(answerAmount > 0) ? (
                     (answerAmount > 1) ? (
-                        <div className="text-right"><Link href={`/answers?id=${encodeURIComponent(postData.id)}`}>See {answerAmount} answers {">" }</Link></div>
+                        <div className="text-right"><Link href={`/answers?id=${encodeURIComponent(postData.id)}`}>{answerAmount} Answers {"(click to see)" }</Link></div>
                     ) : (
-                        <div className="text-right"><Link href={`/answers?id=${encodeURIComponent(postData.id)}`}>See {answerAmount} answer  {">"}</Link></div>
+                            <div className="text-right"><Link href={`/answers?id=${encodeURIComponent(postData.id)}`}>{answerAmount} Answer  {"(click to see)"}</Link></div>
                     )
                 ) : (
                     <div className="text-right">No answers</div>

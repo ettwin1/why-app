@@ -52,7 +52,6 @@ export default function Home({ searchQuery }) {
                 "Content-Type": "application/json",
             },
         }
-        //console.log("email: ", email);
         const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=all&email='+email;
 
         const response = await fetch(apiUrlEndpoint, postData);
@@ -123,7 +122,6 @@ export default function Home({ searchQuery }) {
         const response = await fetch(apiUrlEndpoint, requestData);
         const result = await response.json();
         console.log("Answer submitted: ",result);
-        //const newAnswerData = result.record;
     };
 
 
