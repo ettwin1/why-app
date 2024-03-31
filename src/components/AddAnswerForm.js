@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useSession, signIn } from 'next-auth/react';
 
-const AddAnswerForm = ({ onSubmit, postId }) => {
+const AddAnswerForm = ({ onSubmit, postId, userEmail }) => {
     const { data: session } = useSession();
 
     const handleSubmit = (form) => {
@@ -36,7 +36,7 @@ const AddAnswerForm = ({ onSubmit, postId }) => {
                 placeholder="Because..."
             />
            
-            <button className="bg-gray-200 rounded p-1 px-2" type="submit">Add</button>
+            <button className="w-1/12 bg-gray-200 rounded p-1 px-2" type="submit">Add</button>
   
         </form>
     );

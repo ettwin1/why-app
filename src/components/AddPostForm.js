@@ -30,7 +30,7 @@ const AddPostForm = ({ onSubmit }) => {
     }
 
     return (
-         <div className="bg-white p-4 shadow-md rounded-md mt-8" >
+         <div className="bg-white p-4 shadow-md rounded-md mt-8 mb-12" >
             <div className="text-xxl mb-2">Add Question</div>
             <form onSubmit={handleSubmit}>
                 <input

@@ -7,11 +7,12 @@ import QuestionPost from "../components/QuestionPost"
 import AddPostForm from "../components/AddPostForm";
 import NewActivity from "../components/NewActivity";
 import { useSession, signOut, signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
 
 const inter = Inter({ subsets: ["latin"] });
 
 
-export default function Home() {
+export default function Home({ searchQuery }) {
 
     const [isSessionLoaded, setIsSessionLoaded] = useState(false);
     const [created, setCreated] = useState(false);
@@ -25,20 +26,22 @@ export default function Home() {
         
     }
     
-
+    const router = useRouter();
+    const searchTerm = router.query.search || searchQuery || "";
     
 
     async function searchPosts(searchTerm) {
+        //Insert more string manipulation to parse keywords out of the search term
         const requestData = {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
             },
         }
-        const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=search&term=' + searchTerm;
+        const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=search&term=' + searchTerm + '&email=' + email;
         const response = await fetch(apiUrlEndpoint, requestData);
         const result = await response.json();
-        console.log(result)
+        console.log("Search results: ", result);
         setData(result.results);
     }
 
@@ -49,14 +52,12 @@ export default function Home() {
                 "Content-Type": "application/json",
             },
         }
-        console.log("email: ", email);
         const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=all&email='+email;
 
         const response = await fetch(apiUrlEndpoint, postData);
         const result = await response.json();
         console.log(result)
-        setData(result.results);    
-
+        setData(result.results);
     };
 
     async function getNewActivity() {
@@ -99,9 +100,13 @@ export default function Home() {
                 created: newData.created,
                 img: newData.img,
                 name: newData.name,
+                answers: 0,
+                liked: 0,
+                likes: 0,
             },
             ...data,
         ]);
+        console.log("updated data: ", data);
     };
 
     async function addAnswer(answerData) {
@@ -116,19 +121,26 @@ export default function Home() {
         const apiUrlEndpoint = 'http://localhost:3000/api/dbhandler?requestType=createAnswer';
         const response = await fetch(apiUrlEndpoint, requestData);
         const result = await response.json();
-        console.log(result);
-        const newData = result.record;
+        console.log("Answer submitted: ",result);
     };
 
 
     useEffect(() => {
         if (status === 'authenticated') {
             getNewActivity();
-            getPosts();
+            if (searchTerm == "") {
+                getPosts();
+            } else {
+                searchPosts(searchTerm);
+            }
         } else if (status === 'unauthenticated') {
-            getPosts();
+            if (searchTerm == "") {
+                getPosts();
+            } else {
+                searchPosts(searchTerm);
+            }
         }
-    }, [status])
+    }, [status, searchTerm])
     
 
     
@@ -137,8 +149,8 @@ export default function Home() {
 
     return (
         <>
-            <NavBar onSubmit={searchPosts} />
-            <div className="flex justify-center">
+            <NavBar searchTerm={searchTerm} />
+            <div className="mt-20 flex justify-center">
                 <div className="mr-8 w-640">
                     <AddPostForm onSubmit={addPost} />
                     {data.map((item) => (
@@ -152,4 +164,16 @@ export default function Home() {
             
         </>
     );
+}
+
+//Get Query Parameters (when page is loaded directly from the server)
+export async function getServerSideProps({ query }) {
+
+    const receivedData = query.data || "";
+
+    return {
+        props: {
+            receivedData,
+        },
+    };
 }

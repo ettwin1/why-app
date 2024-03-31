@@ -8,6 +8,7 @@ const QuestionPost = ({ postData, onSubmit, userEmail }) => {
     
     const [liked, setLike] = useState(postData.liked);
     const [likes, changeLikes] = useState(postData.likes);
+    const [answerAmount, setAnswerAmount] = useState(postData.answers);
 
     async function addLike() {
         const likeData = JSON.stringify({
@@ -68,14 +69,23 @@ const QuestionPost = ({ postData, onSubmit, userEmail }) => {
         }
     }
 
+    function addAnswer(answerData) {
+        setAnswerAmount(answerAmount + 1);
+        onSubmit(answerData);
+    }
+
     return (
         <div className="bg-white p-4 shadow-md rounded-md mt-8" >
-            <div className="">
-                <img className="rounded-full inline" src={postData.img} width={40} height={40} alt="Profile pic" />
-                <p className="inline ml-3 text-gray-600">{postData.name}</p>
-               {/* <p className="text-gray-500 text-sm ">{new Date(postData.created).getFullYear()}</p>*/}
-            </div>
-            <div className="text-xxl p-2">{postData.question}</div>
+            <Link href={`/answers?id=${encodeURIComponent(postData.id)}`}>
+                <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                        <img className="rounded-full inline" src={postData.img} width={40} height={40} alt="Profile pic" />
+                        <p className="inline ml-3 text-gray-600">{postData.name}</p>
+                    </div>
+                </div>
+                <div className="text-xxl p-2">{postData.question}</div>
+            </Link>
+
             <div className="flex justify-between mb-2">
                 <div>
                     {!liked ? (
@@ -85,14 +95,18 @@ const QuestionPost = ({ postData, onSubmit, userEmail }) => {
                     )}
                     <span className="ml-2">{likes}</span>
                 </div>
-                {(postData.answers > 0) ? (
-                    <div className="text-right text-sky-600"><Link href={`/answers?id=${encodeURIComponent(postData.id)}`}>See answers here</Link></div>
+                {(answerAmount > 0) ? (
+                    (answerAmount > 1) ? (
+                        <div className="text-right"><Link href={`/answers?id=${encodeURIComponent(postData.id)}`}>{answerAmount} Answers {"(click to see)" }</Link></div>
+                    ) : (
+                            <div className="text-right"><Link href={`/answers?id=${encodeURIComponent(postData.id)}`}>{answerAmount} Answer  {"(click to see)"}</Link></div>
+                    )
                 ) : (
                     <div className="text-right">No answers</div>
                 )}
                 
             </div>
-            <AddAnswerForm onSubmit={onSubmit} postId={postData.id} />
+            <AddAnswerForm onSubmit={addAnswer} postId={postData.id} />
         </div>
     );
 }
